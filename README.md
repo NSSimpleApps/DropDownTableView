@@ -31,4 +31,4 @@ class TableViewController: DropDownTableViewController {
 }
 ```
 
-![Alt text](https://raw.githubusercontent.com/NSSimpleApps/DropDownTableView/master/DropDownTableView/DropDownTableView.gif)
+![Alt text](https://github.com/NSSimpleApps/DropDownTableView/blob/master/DropDownTableView.gif)
