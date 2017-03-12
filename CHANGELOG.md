@@ -1,3 +1,8 @@
+## 0.7.1 (2017-03-12)
+
+- fixed small bugs
+- removed methods: `tableView(_:, accessoryViewForSelectedRow:) -> UIView?`, and `tableView(_:, accessoryViewForDeselectedRow:) -> UIView?` 
+
 ## 0.7 (2017-02-19)
 
 - full update

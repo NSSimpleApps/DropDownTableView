@@ -26,7 +26,33 @@ class TableViewController: DropDownTableViewController {
         return someValue
     }
     override func tableView(_ tableView: UITableView, cellForRow row: Int, indexPath: IndexPath) -> UITableViewCell {
+        if row == self.nsk_selectedRow {
+            someCell.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+        } else {
+            someCell.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+        }
         return someCell
+    }
+    override func tableView(_ tableView: UITableView, cellForSubrow subrow: Int, inRow row: Int, indexPath: IndexPath) -> UITableViewCell {
+        return someCell
+    }
+    override func tableView(_ tableView: UITableView, didSelectRow row: Int) {
+        switch (self.nsk_selectedRow, row) {
+            case (let sr?, _) where row == sr:
+                tableView.cellForRow(at: row)?.accessoryView =  UIImageView(image: UIImage(named: "down_arrow"))
+                tableView.deselect(row: row, animated: true)
+            break
+            case (let sr?, _) where row != sr:
+                tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+                tableView.cellForRow(at: sr)?.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+            break
+            case (nil, _):
+                tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            break
+            default:
+            break
+        }
+        super.tableView(tableView, didSelectRow: row)
     }
 }
 ```
