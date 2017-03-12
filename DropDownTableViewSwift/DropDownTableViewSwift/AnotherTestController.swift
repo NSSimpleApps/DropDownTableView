@@ -54,6 +54,15 @@ class AnotherTestController: DropDownTableViewController {
         cell.textLabel?.text = "Row " + String(row)
         cell.detailTextLabel?.text = nil
         
+        if row == self.nsk_selectedRow {
+            
+            cell.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            
+        } else {
+            
+            cell.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+        }
+        
         return cell
     }
     
@@ -67,21 +76,29 @@ class AnotherTestController: DropDownTableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView? {
-        
-        return UIImageView(image: UIImage(named: "selectedImage"))
-    }
-    
-    override func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView? {
-        
-        return UIImageView(image: UIImage(named: "deselectedImage"))
-    }
-    
     override func tableView(_ tableView: UITableView, didSelectRow row: Int) {
         
-        super.tableView(tableView, didSelectRow: row)
+        switch (self.nsk_selectedRow, row) {
+            
+        case (let sr?, _) where row == sr:
+            tableView.cellForRow(at: row)?.accessoryView =  UIImageView(image: UIImage(named: "down_arrow"))
+            tableView.deselect(row: row, animated: true)
+            break
+            
+        case (let sr?, _) where row != sr:
+            tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            tableView.cellForRow(at: sr)?.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+            break
+            
+        case (nil, _):
+            tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            break
+            
+        default:
+            break
+        }
         
-        print(#function, row)
+        super.tableView(tableView, didSelectRow: row)
     }
     
     override func tableView(_ tableView: UITableView, didSelectSubrow subrow: Int, inRow row: Int) {

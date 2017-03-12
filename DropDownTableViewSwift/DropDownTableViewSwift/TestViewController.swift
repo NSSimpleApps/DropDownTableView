@@ -71,43 +71,70 @@ class TestViewController: DropDownTableViewController {
             cell.textLabel?.text = "Date"
             cell.detailTextLabel?.text = self.date.customDateFormat
         }
+        
+        if row == self.nsk_selectedRow {
+            
+            cell.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            
+        } else {
+            
+            cell.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+        }
+        
         return cell
     }
     
     override func tableView(_ tableView: UITableView, cellForSubrow subrow: Int, inRow row: Int, indexPath: IndexPath) -> UITableViewCell {
         
+        let cell: UITableViewCell
+        
         if row == 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "PickerCell", for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: "PickerCell", for: indexPath)
             
             // this is dirty hack. Don't do it anymore
             if let pickerView = cell.contentView.subviews.first as? UIPickerView {
                 
                 pickerView.selectRow(self.value, inComponent: 0, animated: false)
             }
-            return cell
             
         } else {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "DateCell", for: indexPath)
+            cell = tableView.dequeueReusableCell(withIdentifier: "DateCell", for: indexPath)
             
             // this is dirty hack. Don't do it anymore
             if let datePicker = cell.contentView.subviews.first as? UIDatePicker {
                 
                 datePicker.date = self.date
             }
-            return cell
         }
+        
+        return cell
     }
     
-    override func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, didSelectRow row: Int) {
         
-        return UIImageView(image: UIImage(named: "selectedImage"))
-    }
-    
-    override func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView? {
+        switch (self.nsk_selectedRow, row) {
+            
+        case (let sr?, _) where row == sr:
+            tableView.cellForRow(at: row)?.accessoryView =  UIImageView(image: UIImage(named: "down_arrow"))
+            tableView.deselect(row: row, animated: true)
+            break
+            
+        case (let sr?, _) where row != sr:
+            tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            tableView.cellForRow(at: sr)?.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+            break
+            
+        case (nil, _):
+            tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            break
+            
+        default:
+            break
+        }
         
-        return UIImageView(image: UIImage(named: "deselectedImage"))
+        super.tableView(tableView, didSelectRow: row)
     }
     
     override func tableView(_ tableView: UITableView, heightForSubrow subrow: Int, inRow row: Int) -> CGFloat {

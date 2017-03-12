@@ -31,8 +31,8 @@ import UIKit
 @available(iOS 8.0, *)
 open class DropDownTableViewController: UITableViewController {
     
-    private lazy var selectedRow: Int? = self.showSubrowsInRow
-    private var numberOfSubrows = 0
+    private(set) public lazy var nsk_selectedRow: Int? = self.showSubrowsInRow
+    private(set) public var nsk_numberOfSubrows = 0
     
     /*optional*/ open var showSubrowsInRow: Int? {
         
@@ -48,16 +48,16 @@ open class DropDownTableViewController: UITableViewController {
         
         let numberOfRows = self.numberOfRows(in: tableView)
             
-        if let selectedRow = self.selectedRow {
+        if let selectedRow = self.nsk_selectedRow {
                 
-            self.numberOfSubrows = self.tableView(tableView, numberOfSubrowsInRow: selectedRow)
+            self.nsk_numberOfSubrows = self.tableView(tableView, numberOfSubrowsInRow: selectedRow)
             
         } else {
                 
-            self.numberOfSubrows = 0
+            self.nsk_numberOfSubrows = 0
         }
                 
-        return numberOfRows + self.numberOfSubrows
+        return numberOfRows + self.nsk_numberOfSubrows
     }
     
     open func tableView(_ tableView: UITableView, cellForRow row: Int, indexPath: IndexPath) -> UITableViewCell {
@@ -75,23 +75,11 @@ open class DropDownTableViewController: UITableViewController {
         return self.valueForIndexPath(indexPath,
                                       valueForRow: { (row) -> UITableViewCell in
                                             
-                                            let cellForRow = self.tableView(tableView, cellForRow: row, indexPath: indexPath)
-                                            
-                                            if let accessoryViewForSelectedRow = self.tableView(tableView, accessoryViewForSelectedRow: row), row == self.selectedRow {
-                                                
-                                                cellForRow.accessoryView = accessoryViewForSelectedRow
-                                                
-                                            } else if let accessoryViewForDeselectedRow = self.tableView(tableView, accessoryViewForDeselectedRow: row) {
-                                                
-                                                cellForRow.accessoryView = accessoryViewForDeselectedRow
-                                            }
-                                            
-                                            return cellForRow
-                                            
+                                            return self.tableView(tableView, cellForRow: row, indexPath: indexPath)
         },
                                       valueForSubrow: { (subrow, row) -> UITableViewCell in
-            
-            return self.tableView(tableView, cellForSubrow: subrow, inRow: row, indexPath: indexPath)
+                                        
+                                        return self.tableView(tableView, cellForSubrow: subrow, inRow: row, indexPath: indexPath)
         })
     }
     
@@ -103,7 +91,7 @@ open class DropDownTableViewController: UITableViewController {
         return self.valueForIndexPath(indexPath,
             valueForRow: { (row) -> Bool in
                 
-                return (self.numberOfSubrows == 0) && self.tableView(tableView, canEditRow: row)
+                return (self.nsk_numberOfSubrows == 0) && self.tableView(tableView, canEditRow: row)
             },
             valueForSubrow: { (subrow, row) -> Bool in
                 
@@ -116,7 +104,7 @@ open class DropDownTableViewController: UITableViewController {
         return self.valueForIndexPath(indexPath,
             valueForRow: { (row) -> Bool in
                 
-                return (self.numberOfSubrows == 0) && self.tableView(tableView, canMoveRow: row)
+                return (self.nsk_numberOfSubrows == 0) && self.tableView(tableView, canMoveRow: row)
             },
             valueForSubrow: { (subrow, row) -> Bool in
                 
@@ -148,7 +136,7 @@ open class DropDownTableViewController: UITableViewController {
     
     override public final func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         
-        if self.numberOfSubrows == 0 {
+        if self.nsk_numberOfSubrows == 0 {
             
             let sourceRow = sourceIndexPath.row
             let destinationRow = destinationIndexPath.row
@@ -177,7 +165,7 @@ open class DropDownTableViewController: UITableViewController {
                                                             return subrow
             })
             
-            if let sourceSubrow = sourceSubrow, let destinationSubrow = destinationSubrow, let selectedRow = self.selectedRow {
+            if let sourceSubrow = sourceSubrow, let destinationSubrow = destinationSubrow, let selectedRow = self.nsk_selectedRow {
                 
                 self.tableView(tableView, moveSubrow: sourceSubrow,
                                to: destinationSubrow,
@@ -334,9 +322,9 @@ open class DropDownTableViewController: UITableViewController {
     
     open func tableView(_ tableView: UITableView, didSelectRow row: Int) {
         
-        if self.selectedRow == nil {
+        if self.nsk_selectedRow == nil {
             
-            self.selectedRow = row
+            self.nsk_selectedRow = row
             
             let count = self.tableView(tableView, numberOfSubrowsInRow: row)
             
@@ -347,51 +335,35 @@ open class DropDownTableViewController: UITableViewController {
                                     in: row,
                                     with: animation)
             tableView.endUpdates()
+            //tableView.select(row: row, animated: true, scrollPosition: .none)
             
-            if let cell = tableView.cellForRow(at: row) {
-                
-                cell.accessoryView = self.tableView(tableView, accessoryViewForSelectedRow: row)
-            }
-            
-            tableView.select(row: row, animated: true, scrollPosition: .none)
-            
-        } else if self.selectedRow! == row { // subrows should be deleted from row
+        } else if self.nsk_selectedRow! == row { // subrows should be deleted from row
             
             let animation = self.tableView(tableView, animationForDeletionIn: row)
             
-            self.selectedRow = nil
+            self.nsk_selectedRow = nil
             tableView.beginUpdates()
-            tableView.deleteSubrows(Array(0..<self.numberOfSubrows).reversed(),
+            tableView.deleteSubrows(Array(0..<self.nsk_numberOfSubrows).reversed(),
                                     in: row,
                                     with: animation)
             tableView.endUpdates()
-            
-            if let cell = tableView.cellForRow(at: row) {
-                
-                cell.accessoryView = self.tableView(tableView, accessoryViewForDeselectedRow: row)
-            }
-            tableView.deselect(row: row, animated: true)
+            //tableView.deselect(row: row, animated: true)
             
         } else { // subrows should be deleted from row and inserted into (row - deletedCount)
             
-            let deselectedRow = self.selectedRow!
-            self.selectedRow = nil
+            let deselectedRow = self.nsk_selectedRow!
+            self.nsk_selectedRow = nil
             
             let animationForDeletion = self.tableView(tableView, animationForDeletionIn: deselectedRow)
             
             tableView.beginUpdates()
-            tableView.deleteSubrows(Array(0..<self.numberOfSubrows).reversed(),
+            tableView.deleteSubrows(Array(0..<self.nsk_numberOfSubrows).reversed(),
                                     in: deselectedRow,
                                     with: animationForDeletion)
             tableView.endUpdates()
+            //tableView.deselect(row: deselectedRow, animated: true)
             
-            if let cell = tableView.cellForRow(at: deselectedRow) {
-                
-                cell.accessoryView = self.tableView(tableView, accessoryViewForDeselectedRow: deselectedRow)
-            }
-            tableView.deselect(row: deselectedRow, animated: true)
-            
-            self.selectedRow = row
+            self.nsk_selectedRow = row
             let count = self.tableView(tableView, numberOfSubrowsInRow: row)
             
             let animationForInsertion = self.tableView(tableView, animationForInsertionIn: row)
@@ -401,13 +373,7 @@ open class DropDownTableViewController: UITableViewController {
                                     in: row,
                                     with: animationForInsertion)
             tableView.endUpdates()
-            
-            if let cell = tableView.cellForRow(at: row) {
-                
-                cell.accessoryView = self.tableView(tableView, accessoryViewForSelectedRow: row)
-            }
-            
-            tableView.select(row: row, animated: true, scrollPosition: .none)
+            //tableView.select(row: row, animated: true, scrollPosition: .none)
         }
     }
     
@@ -511,7 +477,7 @@ open class DropDownTableViewController: UITableViewController {
             
         } else {
             
-            if let selectedRow = self.selectedRow, self.numberOfSubrows > 0 {
+            if let selectedRow = self.nsk_selectedRow, self.nsk_numberOfSubrows > 0 {
                 
                 self.tableView(tableView, didEndEditingSubrow: nil, inRow: selectedRow)
                 
@@ -524,7 +490,7 @@ open class DropDownTableViewController: UITableViewController {
     
     override public final func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
         
-        if self.numberOfSubrows == 0 {
+        if self.nsk_numberOfSubrows == 0 {
             
             let targetForRow = self.tableView(tableView, targetRowForMoveFromRow: sourceIndexPath.row,
                 to: proposedDestinationIndexPath.row)
@@ -553,7 +519,7 @@ open class DropDownTableViewController: UITableViewController {
                     return subrow
             })
             
-            if let proposedSubrow = _proposedSubrow, let sourceSubrow = _sourceSubrow, let selectedRow = self.selectedRow {
+            if let proposedSubrow = _proposedSubrow, let sourceSubrow = _sourceSubrow, let selectedRow = self.nsk_selectedRow {
                 
                 let targetSubrow = self.tableView(tableView,
                                                   targetSubrowForMoveFromSubrow: sourceSubrow,
@@ -624,7 +590,7 @@ open class DropDownTableViewController: UITableViewController {
     
     open func tableView(_ tableView: UITableView, indexPathsForRows rows: [Int]) -> [IndexPath] {
         
-        if let selectedRow = self.selectedRow, self.numberOfSubrows > 0 {
+        if let selectedRow = self.nsk_selectedRow, self.nsk_numberOfSubrows > 0 {
             
             return rows.map({ (row: Int) -> IndexPath in
                 
@@ -634,7 +600,8 @@ open class DropDownTableViewController: UITableViewController {
                     
                 } else {
                     
-                    return IndexPath(row: row + self.numberOfSubrows + 1, section: 0)
+                    //return IndexPath(row: row + self.nsk_numberOfSubrows + 1, section: 0)
+                    return IndexPath(row: row + self.nsk_numberOfSubrows, section: 0)
                 }
             })
             
@@ -649,11 +616,11 @@ open class DropDownTableViewController: UITableViewController {
     
     open func tableView(_ tableView: UITableView, indexPathsForSubrows subrows: [Int], inRow row: Int) -> [IndexPath] {
         
-        if self.selectedRow == row && self.numberOfSubrows > 0 {
+        if self.nsk_selectedRow == row && self.nsk_numberOfSubrows > 0 {
             
             return subrows.flatMap({ (subrow: Int) -> IndexPath? in
                 
-                if subrow < self.numberOfSubrows {
+                if subrow < self.nsk_numberOfSubrows {
                     
                     return IndexPath(row: row + subrow + 1, section: 0)
                     
@@ -675,8 +642,8 @@ open class DropDownTableViewController: UITableViewController {
         
         let row = indexPath.row
         
-        switch (self.selectedRow, self.numberOfSubrows) {
-        case (let sr?, _) where row <= sr:
+        switch (self.nsk_selectedRow, self.nsk_numberOfSubrows) {
+        case (let selectedRow?, _) where row <= selectedRow:
             fallthrough
             
         case (_, 0):
@@ -685,21 +652,21 @@ open class DropDownTableViewController: UITableViewController {
         case (nil, _):
             return valueForRow(row)
             
-        case (let sr?, let n) where row > sr && row <= (sr + n):
-            return valueForSubrow(row - sr - 1, sr)
+        case (let selectedRow?, let n) where row > selectedRow && row <= (selectedRow + n):
+            return valueForSubrow(row - selectedRow - 1, selectedRow)
             
         default:
-            return valueForRow(row - self.numberOfSubrows)
+            return valueForRow(row - self.nsk_numberOfSubrows)
         }
     }
     
     open func dropDownDeleteRows(_ rows: [Int], in tableView: UITableView) {
         
-        if let selectedRow = self.selectedRow {
+        if let selectedRow = self.nsk_selectedRow {
             
             if rows.contains(selectedRow) {
                 
-                self.selectedRow = nil
+                self.nsk_selectedRow = nil
                 
             } else {
                 
@@ -707,20 +674,20 @@ open class DropDownTableViewController: UITableViewController {
                     
                     elem < selectedRow
                 })
-                self.selectedRow! -= count
+                self.nsk_selectedRow! -= count
             }
         }
     }
     
     open func dropDownInsertRows(_ rows: [Int], in tableView: UITableView) {
         
-        if let selectedRow = self.selectedRow {
+        if let selectedRow = self.nsk_selectedRow {
             
             let count = rows.countIf({ (elem: Int) -> Bool in
                 
                 elem <= selectedRow
             })
-            self.selectedRow! += count
+            self.nsk_selectedRow! += count
         }
     }
 }

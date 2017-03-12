@@ -55,8 +55,8 @@ public protocol DropDownTableViewDataSource : NSObjectProtocol {
     /*optional*/ func tableView(_ tableView: UITableView, canMoveSubrow subrow: Int, inRow row: Int) -> Bool
     
     // default is nil
-    /*optional*/ func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView?
-    /*optional*/ func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView?
+    ///*optional*/ func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView?
+    ///*optional*/ func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView?
     
     /*optional*/ func tableView(_ tableView: UITableView, moveRow sourceRow: Int, to destinationRow: Int)
     /*optional*/ func tableView(_ tableView: UITableView, moveSubrow sourceSubrow: Int, to destinationSubrow: Int, inRow row: Int)
@@ -105,14 +105,14 @@ extension DropDownTableViewController: DropDownTableViewDataSource {
         return false
     }
     
-    /*optional*/ open func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView? {
-        
-        return nil
-    }
-    /*optional*/ open func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView? {
-        
-        return nil
-    }
+//    /*optional*/ open func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView? {
+//        
+//        return nil
+//    }
+//    /*optional*/ open func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView? {
+//        
+//        return nil
+//    }
     
     /*optional*/ open func tableView(_ tableView: UITableView, moveRow sourceRow: Int, to destinationRow: Int) {}
     /*optional*/ open func tableView(_ tableView: UITableView, moveSubrow sourceSubrow: Int, to destinationSubrow: Int, inRow row: Int) {}

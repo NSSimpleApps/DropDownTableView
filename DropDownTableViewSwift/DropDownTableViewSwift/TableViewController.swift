@@ -67,7 +67,7 @@ class TableViewController: DropDownTableViewController {
     
     override var showSubrowsInRow: Int? {
         
-        return 0
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRow row: Int, indexPath: IndexPath) -> UITableViewCell {
@@ -75,7 +75,41 @@ class TableViewController: DropDownTableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "RowCell", for: indexPath)
         cell.textLabel?.text = self.data[row].name
         
+        if row == self.nsk_selectedRow {
+            
+            cell.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            
+        } else {
+            
+            cell.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+        }
+        
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRow row: Int) {
+        
+        switch (self.nsk_selectedRow, row) {
+            
+        case (let sr?, _) where row == sr:
+            tableView.cellForRow(at: row)?.accessoryView =  UIImageView(image: UIImage(named: "down_arrow"))
+            tableView.deselect(row: row, animated: true)
+            break
+            
+        case (let sr?, _) where row != sr:
+            tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            tableView.cellForRow(at: sr)?.accessoryView = UIImageView(image: UIImage(named: "down_arrow"))
+            break
+            
+        case (nil, _):
+            tableView.cellForRow(at: row)?.accessoryView = UIImageView(image: UIImage(named: "up_arrow"))
+            break
+            
+        default:
+            break
+        }
+    
+        super.tableView(tableView, didSelectRow: row)
     }
     
     override func tableView(_ tableView: UITableView, cellForSubrow subrow: Int, inRow row: Int, indexPath: IndexPath) -> UITableViewCell {
@@ -87,16 +121,6 @@ class TableViewController: DropDownTableViewController {
         cell.detailTextLabel?.text = pair.value
         
         return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, accessoryViewForSelectedRow row: Int) -> UIView? {
-        
-        return UIImageView(image: UIImage(named: "selectedImage"))
-    }
-    
-    override func tableView(_ tableView: UITableView, accessoryViewForDeselectedRow row: Int) -> UIView? {
-        
-        return UIImageView(image: UIImage(named: "deselectedImage"))
     }
     
     override func tableView(_ tableView: UITableView, indentationLevelForRow row: Int) -> Int {
@@ -169,12 +193,12 @@ class TableViewController: DropDownTableViewController {
     
     override func tableView(_ tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRow row: Int) {
         
-        print(cell.textLabel?.text ?? "", row)
+        //print(cell.textLabel?.text ?? "", row)
     }
     
     override func tableView(_ tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forSubrow subrow: Int, inRow row: Int) {
         
-        print(cell.detailTextLabel?.text ?? "", row, subrow)
+        //print(cell.detailTextLabel?.text ?? "", row, subrow)
     }
     
     override func tableView(_ tableView: UITableView, canMoveRow row: Int) -> Bool {
