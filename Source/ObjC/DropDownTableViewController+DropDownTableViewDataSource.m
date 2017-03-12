@@ -73,16 +73,6 @@
     return NO;
 }
 
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForSelectedRow:(NSInteger)row {
-    
-    return nil;
-}
-
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForDeselectedRow:(NSInteger)row {
-    
-    return nil;
-}
-
 - (void)tableView:(UITableView *)tableView moveRow:(NSInteger)sourceRow toDestinationRow:(NSInteger)destinationRow {}
 
 - (void)tableView:(UITableView *)tableView moveSourceSubrow:(NSInteger)sourceSubrow toDestinationSubrow:(NSInteger)destinationSubrow inRow:(NSInteger)row {}

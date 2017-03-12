@@ -63,8 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)tableView:(UITableView *)tableView canMoveSubrow:(NSInteger)subrow inRow:(NSInteger)row;
 
 // default is nil
-- (nullable UIView *)tableView:(UITableView *)tableView accessoryViewForSelectedRow:(NSInteger)row;
-- (nullable UIView *)tableView:(UITableView *)tableView accessoryViewForDeselectedRow:(NSInteger)row;
+//- (nullable UIView *)tableView:(UITableView *)tableView accessoryViewForSelectedRow:(NSInteger)row;
+//- (nullable UIView *)tableView:(UITableView *)tableView accessoryViewForDeselectedRow:(NSInteger)row;
 
 - (void)tableView:(UITableView *)tableView moveRow:(NSInteger)sourceRow toDestinationRow:(NSInteger) destinationRow;
 - (void)tableView:(UITableView *)tableView moveSourceSubrow:(NSInteger)sourceSubrow toDestinationSubrow:(NSInteger)destinationSubrow inRow:(NSInteger)row;

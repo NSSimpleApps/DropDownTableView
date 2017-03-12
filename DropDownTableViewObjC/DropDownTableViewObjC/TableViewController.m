@@ -131,6 +131,20 @@
                                                             forIndexPath:indexPath];
     cell.textLabel.text = self.data[row].name;
     
+    if (self.nsk_selectedRow) {
+        
+        NSInteger selectedRow = self.nsk_selectedRow.integerValue;
+        
+        if (row == selectedRow) {
+            
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+            
+        } else {
+            
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+        }
+    }
+    
     return cell;
 }
 
@@ -144,17 +158,34 @@
     cell.textLabel.text = pair.key;
     cell.detailTextLabel.text = pair.value;
     
+    
+    
     return cell;
 }
 
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForSelectedRow:(NSInteger)row {
+- (void)tableView:(UITableView *)tableView didSelectRow:(NSInteger)row {
     
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selectedImage"]];
-}
-
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForDeselectedRow:(NSInteger)row {
+    if (self.nsk_selectedRow) {
+        
+        NSInteger selectedRow = self.nsk_selectedRow.integerValue;
+        
+        if (row == selectedRow) {
+            
+            [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+            [tableView deselectRow:row animated:YES];
+            
+        } else {
+            
+            [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+            [tableView cellForRowAtRow:selectedRow].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+        }
+        
+    } else {
+        
+        [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+    }
     
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"deselectedImage"]];
+    [super tableView:tableView didSelectRow:row];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRow:(NSInteger)row {

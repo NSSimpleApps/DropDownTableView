@@ -33,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface DropDownTableViewController : UITableViewController
 
+@property (strong, nullable, readonly) NSNumber *nsk_selectedRow;
+@property (assign, readonly) NSInteger nsk_numberOfSubrows;
+
 - (NSArray<NSIndexPath *> *)tableView:(UITableView *)tableView indexPathsForRows:(NSArray<NSNumber *> *)rows;
 - (NSArray<NSIndexPath *> *)tableView:(UITableView *)tableView indexPathsForSubrows:(NSArray<NSNumber *> *)subrows inRow:(NSInteger)row;
 

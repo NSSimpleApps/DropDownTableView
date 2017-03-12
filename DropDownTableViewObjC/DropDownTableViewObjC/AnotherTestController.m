@@ -68,6 +68,20 @@
     cell.textLabel.text = [NSString stringWithFormat:@"Row %ld", (long)row];
     cell.detailTextLabel.text = nil;
     
+    if (self.nsk_selectedRow) {
+        
+        NSInteger selectedRow = self.nsk_selectedRow.integerValue;
+        
+        if (row == selectedRow) {
+            
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+            
+        } else {
+            
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+        }
+    }
+    
     return cell;
 }
 
@@ -78,24 +92,34 @@
     cell.detailTextLabel.text = @(subrow).stringValue;
     cell.accessoryView = nil;
     
+    
+    
     return cell;
-}
-
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForSelectedRow:(NSInteger)row {
-    
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selectedImage"]];
-}
-
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForDeselectedRow:(NSInteger)row {
-    
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"deselectedImage"]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRow:(NSInteger)row {
     
-    [super tableView:tableView didSelectRow:row];
+    if (self.nsk_selectedRow) {
+        
+        NSInteger selectedRow = self.nsk_selectedRow.integerValue;
+        
+        if (row == selectedRow) {
+            
+            [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+            [tableView deselectRow:row animated:YES];
+            
+        } else {
+            
+            [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+            [tableView cellForRowAtRow:selectedRow].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+        }
+        
+    } else {
+        
+        [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+    }
     
-    NSLog(@"%s, %ld", __func__, (long)row);
+    [super tableView:tableView didSelectRow:row];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectSubrow:(NSInteger)subrow inRow:(NSInteger)row {

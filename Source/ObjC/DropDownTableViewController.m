@@ -12,9 +12,9 @@
 
 @interface DropDownTableViewController ()
 
-@property (strong, nullable, nonatomic) NSNumber *nsk_selectedRow;
-@property (assign, nonatomic) NSInteger nsk_numberOfSubrows;
-    
+@property (strong, nullable, readwrite) NSNumber *nsk_selectedRow;
+@property (assign, readwrite) NSInteger nsk_numberOfSubrows;
+
 @end
 
 @implementation DropDownTableViewController
@@ -84,24 +84,8 @@
     [self valueForIndexPath:indexPath
                 valueForRow:^UITableViewCell * _Nullable(NSInteger row) {
                     
-                    UITableViewCell *cellForRow = [self tableView:tableView cellForRow:row indexPath:indexPath];
+                    return [self tableView:tableView cellForRow:row indexPath:indexPath];
                     
-                    UIView *accessoryViewForSelectedRow =
-                    [self tableView:tableView accessoryViewForSelectedRow:row];
-                    
-                    UIView *accessoryViewForDeselectedRow =
-                    [self tableView:tableView accessoryViewForDeselectedRow:row];
-                    
-                    if (accessoryViewForSelectedRow != nil && self.nsk_selectedRow != nil && row == self.nsk_selectedRow.integerValue) {
-                        
-                        cellForRow.accessoryView = accessoryViewForSelectedRow;
-                        
-                    } else if (accessoryViewForDeselectedRow != nil) {
-                        
-                        cellForRow.accessoryView = accessoryViewForDeselectedRow;
-                    }
-                    
-                    return cellForRow;
                 }
              valueForSubrow:^UITableViewCell * _Nullable(NSInteger subrow, NSInteger row) {
                  
@@ -399,15 +383,6 @@
                 withRowAnimation:animation];
         [tableView endUpdates];
         
-        UITableViewCell *cell = [tableView cellForRowAtRow:row];
-        
-        if (cell) {
-            
-            cell.accessoryView = [self tableView:tableView accessoryViewForSelectedRow:row];
-        }
-        
-        [tableView selectRow:@(row) animated:YES scrollPosition:UITableViewScrollPositionNone];
-        
     } else if (self.nsk_selectedRow.integerValue == row) { // subrows should be deleted from row
         
         UITableViewRowAnimation animation = [self tableView:tableView animationForDeletionInRow:row];
@@ -418,15 +393,6 @@
                            inRow:row
                 withRowAnimation:animation];
         [tableView endUpdates];
-        
-        UITableViewCell *cell = [tableView cellForRowAtRow:row];
-        
-        if (cell) {
-            
-            cell.accessoryView = [self tableView:tableView accessoryViewForDeselectedRow:row];
-        }
-        
-        [tableView deselectRow:row animated:YES];
         
     } else { // subrows should be deleted from row and inserted into (row - deletedCount)
         
@@ -442,16 +408,6 @@
                 withRowAnimation:animationForDeletion];
         [tableView endUpdates];
         
-        UITableViewCell *deselectedCell =
-        [tableView cellForRowAtRow:deselectedRow];
-        
-        if (deselectedCell) {
-            
-            deselectedCell.accessoryView = [self tableView:tableView accessoryViewForDeselectedRow:deselectedRow];
-        }
-        
-        [tableView deselectRow:deselectedRow animated:YES];
-        
         self.nsk_selectedRow = @(row);
         NSInteger count = [self tableView:tableView numberOfSubrowsInRow:row];
         UITableViewRowAnimation animationForInsertion =
@@ -462,15 +418,6 @@
                            inRow:row
                 withRowAnimation:animationForInsertion];
         [tableView endUpdates];
-        
-        UITableViewCell *selectedCell = [tableView cellForRowAtRow:row];
-        
-        if (selectedCell) {
-            
-            selectedCell.accessoryView = [self tableView:tableView accessoryViewForSelectedRow:row];
-        }
-        
-        [tableView selectRow:@(row) animated:YES scrollPosition:UITableViewScrollPositionNone];
     }
 }
 
@@ -728,7 +675,7 @@
                 
             } else {
                 
-                return [NSIndexPath indexPathForRow:row.integerValue + self.nsk_numberOfSubrows + 1
+                return [NSIndexPath indexPathForRow:row.integerValue + self.nsk_numberOfSubrows
                                           inSection:0];
             }
         }];

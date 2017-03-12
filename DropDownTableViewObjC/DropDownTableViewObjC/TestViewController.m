@@ -91,6 +91,20 @@
         cell.detailTextLabel.text = self.date.customDateFormat;
     }
     
+    if (self.nsk_selectedRow) {
+        
+        NSInteger selectedRow = self.nsk_selectedRow.integerValue;
+        
+        if (row == selectedRow) {
+            
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+            
+        } else {
+            
+            cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+        }
+    }
+    
     return cell;
 }
 
@@ -114,22 +128,38 @@
         UIDatePicker *datePicker = cell.contentView.subviews.firstObject;
         datePicker.date = self.date;
     }
+    
     return cell;
-}
-
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForSelectedRow:(NSInteger)row {
-    
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"selectedImage"]];
-}
-
-- (UIView *)tableView:(UITableView *)tableView accessoryViewForDeselectedRow:(NSInteger)row {
-    
-    return [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"deselectedImage"]];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForSubrow:(NSInteger)subrow inRow:(NSInteger)row {
     
     return 216;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRow:(NSInteger)row {
+    
+    if (self.nsk_selectedRow) {
+        
+        NSInteger selectedRow = self.nsk_selectedRow.integerValue;
+        
+        if (row == selectedRow) {
+            
+            [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+            [tableView deselectRow:row animated:YES];
+            
+        } else {
+            
+            [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+            [tableView cellForRowAtRow:selectedRow].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"down_arrow"]];
+        }
+        
+    } else {
+        
+        [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
+    }
+    
+    [super tableView:tableView didSelectRow:row];
 }
 
 - (IBAction)dateChanged:(UIDatePicker *)sender {
