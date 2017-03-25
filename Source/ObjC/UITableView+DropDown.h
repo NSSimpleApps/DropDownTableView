@@ -36,9 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// returns NSNumber for row or -[NSIndexPath forSubrow:inMainrow:] for subrow
 - (nullable id<DropDownIndexPath>)dropDownIndexPathForCell:(UITableViewCell *)cell;
 
-- (nullable NSArray<NSNumber *> *)rowsInRect:(CGRect)rect;
-/// returns  @[-[NSIndexPath forSubrow:inMainrow:]]
-- (nullable NSArray<NSIndexPath *> *)indexPathsForSubrowsInRect:(CGRect)rect;
+/// returns NSNumber for row or NSIndexPath(forSubrow: Int, inMainrow: Int) for subrow
+- (nullable NSArray<DropDownIndexPath> *)dropDownIndexPathsInRect:(CGRect)rect;
 
 - (nullable __kindof UITableViewCell *)cellForRowAtRow:(NSInteger)row;
 - (nullable __kindof UITableViewCell *)cellForSubrowAtIndexPath:(NSIndexPath *)indexPath; // -[NSIndexPath forSubrow:inMainrow:]
@@ -62,12 +61,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)moveRowAtRow:(NSInteger)row toRow:(NSInteger)newRow;
 - (void)moveSubrow:(NSInteger)subrow toNewSubrow:(NSInteger)newSubrow inRow:(NSInteger)row;
 
-/// returns Int for row or IndexPath(forSubrow: Int, inMainrow: Int) for subrow
+/// returns NSNumber for row or NSIndexPath(forSubrow: Int, inMainrow: Int) for subrow
 - (nullable id<DropDownIndexPath>)dropDownIndexPathForSelectedRow;
 
-- (nullable NSArray<NSNumber *> *)rowsForSelectedRows;
-// IndexPath(forSubrow: Int, inMainrow: Int)
-- (nullable NSArray<NSIndexPath *> *)indexPathsForSelectedSubrows;
+/// returns NSNumber for row or NSIndexPath(forSubrow: Int, inMainrow: Int) for subrow
+- (nullable NSArray<DropDownIndexPath> *)dropDownIndexPathsForSelectedRows;
 
 - (void)selectRow:(nullable NSNumber *)row animated:(BOOL)animated scrollPosition:(UITableViewScrollPosition)scrollPosition;
 - (void)selectSubrowAtIndexPath:(nullable NSIndexPath *)indexPath animated:(BOOL)animated scrollPosition:(UITableViewScrollPosition)scrollPosition;

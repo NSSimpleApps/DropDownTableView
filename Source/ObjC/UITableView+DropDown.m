@@ -111,7 +111,7 @@
     return nil;
 }
 
-- (nullable NSArray<NSNumber *> *)rowsInRect:(CGRect)rect {
+- (nullable NSArray<DropDownIndexPath> *)dropDownIndexPathsInRect:(CGRect)rect {
     
     if (self.dropDownDataSource) {
         
@@ -119,46 +119,22 @@
         
         if (indexPaths) {
             
-            return
-            [indexPaths nsk_flatMapUsingBlock:^id _Nullable(NSIndexPath * _Nonnull indexPath) {
+            return (NSArray<DropDownIndexPath> *)
+            [indexPaths nsk_mapUsingBlock:^id<DropDownIndexPath> _Nullable(NSIndexPath * _Nonnull indexPath) {
                 
-                return
+                
+                id<DropDownIndexPath> value =
                 [self.dropDownDataSource valueForIndexPath:indexPath
-                                               valueForRow:^NSNumber * _Nullable(NSInteger row) {
+                                               valueForRow:^id<DropDownIndexPath> _Nullable(NSInteger row) {
                                                    
                                                    return @(row);
                                                }
-                                            valueForSubrow:^NSNumber * _Nullable(NSInteger subrow, NSInteger row) {
-                                                
-                                                return nil;
-                                            }];
-            }];
-        }
-    }
-    return nil;
-}
-
-- (nullable NSArray<NSIndexPath *> *)indexPathsForSubrowsInRect:(CGRect)rect {
-    
-    if (self.dropDownDataSource) {
-        
-        NSArray<NSIndexPath *> *indexPaths = [self indexPathsForRowsInRect:rect];
-        
-        if (indexPaths) {
-            
-            return
-            [indexPaths nsk_flatMapUsingBlock:^id _Nullable(NSIndexPath * _Nonnull indexPath) {
-                
-                return
-                [self.dropDownDataSource valueForIndexPath:indexPath
-                                               valueForRow:^NSIndexPath * _Nullable(NSInteger row) {
-                                                   
-                                                   return nil;
-                                               }
-                                            valueForSubrow:^NSIndexPath * _Nullable(NSInteger subrow, NSInteger row) {
+                                            valueForSubrow:^id<DropDownIndexPath> _Nullable(NSInteger subrow, NSInteger row) {
                                                 
                                                 return [NSIndexPath indexPathForSubrow:subrow inMainrow:row];
                                             }];
+                
+                return value;
             }];
         }
     }
@@ -445,8 +421,7 @@
     return nil;
 }
 
-// IndexPath(forSubrow: Int, inMainrow: Int)
-- (nullable NSArray<NSIndexPath *> *)indexPathsForSelectedSubrows {
+- (nullable NSArray<DropDownIndexPath> *)dropDownIndexPathsForSelectedRows {
     
     if (self.dropDownDataSource) {
         
@@ -454,19 +429,20 @@
         
         if (indexPathsForSelectedRows) {
             
-            return
-            [indexPathsForSelectedRows nsk_flatMapUsingBlock:^id _Nullable(NSIndexPath * _Nonnull indexPath) {
+            return (NSArray<DropDownIndexPath> *)
+            [indexPathsForSelectedRows nsk_mapUsingBlock:^id<DropDownIndexPath> _Nullable(NSIndexPath * _Nonnull indexPath) {
                 
-                return
+                id<DropDownIndexPath> value =
                 [self.dropDownDataSource valueForIndexPath:indexPath
-                                               valueForRow:^NSIndexPath * _Nullable(NSInteger row) {
+                                               valueForRow:^id<DropDownIndexPath> _Nullable(NSInteger row) {
                                                    
-                                                   return nil;
+                                                   return @(row);
                                                }
-                                            valueForSubrow:^NSIndexPath * _Nullable(NSInteger subrow, NSInteger row) {
+                                            valueForSubrow:^id<DropDownIndexPath> _Nullable(NSInteger subrow, NSInteger row) {
                                                 
                                                 return [NSIndexPath indexPathForSubrow:subrow inMainrow:row];
                                             }];
+                return value;
             }];
         }
     }

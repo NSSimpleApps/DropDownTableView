@@ -1,3 +1,8 @@
+## 0.7.2 (2017-03-25)
+
+- for swift version: `DropDownIndexPath` is a enum with cases: `Int` or `IndexPath`
+- some API changes
+
 ## 0.7.1 (2017-03-12)
 
 - fixed small bugs

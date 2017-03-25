@@ -185,7 +185,7 @@
         [tableView cellForRowAtRow:row].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"up_arrow"]];
     }
     
-    [super tableView:tableView didSelectRow:row];
+    [super tableView:tableView didSelectRow:row];    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView indentationLevelForRow:(NSInteger)row {

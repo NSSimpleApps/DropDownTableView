@@ -8,10 +8,35 @@
 
 import UIKit
 
-public protocol DropDownIndexPath { }
-
-extension Int: DropDownIndexPath { }
-extension IndexPath: DropDownIndexPath { }
+public enum DropDownIndexPath {
+    
+    case row(Int)
+    case subrow(IndexPath)
+    
+    public var row: Int? {
+        
+        switch self {
+            
+        case .row(let row):
+            return row
+            
+        default:
+            return nil
+        }
+    }
+    
+    public var subrow: IndexPath? {
+        
+        switch self {
+            
+        case .subrow(let indexPath):
+            return indexPath
+            
+        default:
+            return nil
+        }
+    }
+}
 
 public extension UITableView {
     
@@ -69,11 +94,11 @@ public extension UITableView {
             return self.dropDownDataSource?.valueForIndexPath(indexPath,
                                                               valueForRow: { (row: Int) -> DropDownIndexPath in
                                                                 
-                                                                return row
+                                                                return DropDownIndexPath.row(row)
             
             }, valueForSubrow: { (subrow, row) -> DropDownIndexPath in
                     
-                    return IndexPath(forSubrow: subrow, inMainrow: row)
+                    return DropDownIndexPath.subrow(IndexPath(forSubrow: subrow, inMainrow: row))
             })
         }
         return nil
@@ -87,51 +112,31 @@ public extension UITableView {
             return self.dropDownDataSource?.valueForIndexPath(indexPath,
                                                               valueForRow: { (row: Int) -> DropDownIndexPath in
                                                                 
-                                                                return row
+                                                                return DropDownIndexPath.row(row)
             },
                                                               valueForSubrow: { (subrow, row) -> DropDownIndexPath in
                                                                 
-                                                                return IndexPath(forSubrow: subrow, inMainrow: row)
+                                                                return DropDownIndexPath.subrow(IndexPath(forSubrow: subrow, inMainrow: row))
             })
         }
         return nil
     }
     
-    public func rows(in rect: CGRect) -> [Int]? {
+    /// returns Int for row or IndexPath(forSubrow: Int, inMainrow: Int) for subrow
+    public func dropDownIndexPaths(in rect: CGRect) -> [DropDownIndexPath]? {
         
-        if let indexPaths = self.indexPathsForRows(in: rect) {
+        if let dropDownDataSource = self.dropDownDataSource, let indexPaths = self.indexPathsForRows(in: rect) {
             
-            return indexPaths.flatMap({ (indexPath: IndexPath) -> Int? in
+            return indexPaths.map({ (indexPath: IndexPath) -> DropDownIndexPath in
                 
-                self.dropDownDataSource?.valueForIndexPath(indexPath,
-                    valueForRow: { (row) -> Int in
+                dropDownDataSource.valueForIndexPath(indexPath,
+                    valueForRow: { (row) -> DropDownIndexPath in
                         
-                        return row
+                        return DropDownIndexPath.row(row)
                     },
-                    valueForSubrow: { (subrow, row) -> Int? in
+                    valueForSubrow: { (subrow, row) -> DropDownIndexPath in
                         
-                        return nil
-                })
-            })
-        }
-        return nil
-    }
-    
-    // IndexPath(forSubrow: Int, inMainrow: Int)
-    public func indexPathsForSubrows(in rect: CGRect) -> [IndexPath]? {
-        
-        if let indexPaths = self.indexPathsForRows(in: rect) {
-            
-            return indexPaths.flatMap({ (indexPath: IndexPath) -> IndexPath? in
-                
-                self.dropDownDataSource?.valueForIndexPath(indexPath,
-                    valueForRow: { (row) -> IndexPath? in
-                        
-                        return nil
-                    },
-                    valueForSubrow: { (subrow, row) -> IndexPath in
-                        
-                        return IndexPath(forSubrow: subrow, inMainrow: row)
+                        return DropDownIndexPath.subrow(IndexPath(forSubrow: subrow, inMainrow: row))
                 })
             })
         }
@@ -290,50 +295,37 @@ public extension UITableView {
             return self.dropDownDataSource?.valueForIndexPath(indexPathForSelectedRow,
                                                               valueForRow: { (row) -> DropDownIndexPath in
                                                                 
-                                                                return row
+                                                                return DropDownIndexPath.row(row)
             },
                                                               valueForSubrow: { (subrow, row) -> DropDownIndexPath in
                                                                 
-                                                                return IndexPath(forSubrow: subrow, inMainrow: row)
+                                                                return DropDownIndexPath.subrow(IndexPath(forSubrow: subrow, inMainrow: row))
             })
         }
         
         return nil
     }
     
-    public var rowsForSelectedRows: [Int]? {
+    /// returns Int for row or IndexPath(forSubrow: Int, inMainrow: Int) for subrow
+    public var dropDownIndexPathsForSelectedRows: [DropDownIndexPath]? {
+        
+        if let dropDownDataSource = self.dropDownDataSource, let indexPathsForSelectedRows = self.indexPathsForSelectedRows {
             
-        return self.indexPathsForSelectedRows?.flatMap({ (indexPath: IndexPath) -> Int? in
-            
-            self.dropDownDataSource?.valueForIndexPath(indexPath,
-                                                       valueForRow: { (row) -> Int in
-                                                            
-                                                            return row
-                                                            
+            return indexPathsForSelectedRows.map({ (indexPath: IndexPath) -> DropDownIndexPath in
+                
+                return dropDownDataSource.valueForIndexPath(indexPath,
+                                                            valueForRow: { (row) -> DropDownIndexPath in
+                                                                
+                                                                return DropDownIndexPath.row(row)
                 },
-                                                       valueForSubrow: { (subrow, row) -> Int? in
-                                                            
-                                                            return nil
+                                                            valueForSubrow: { (subrow, row) -> DropDownIndexPath in
+                                                                
+                                                                return DropDownIndexPath.subrow(IndexPath(forSubrow: subrow, inMainrow: row))
+                })
             })
-        })
-    }
-    
-    // IndexPath(forSubrow: Int, inMainrow: Int)
-    public var indexPathsForSelectedSubrows: [IndexPath]? {
-            
-        return self.indexPathsForSelectedRows?.flatMap({ (indexPath: IndexPath) -> IndexPath? in
-            
-            self.dropDownDataSource?.valueForIndexPath(indexPath,
-                                                          valueForRow: { (row) -> IndexPath? in
-                                                            
-                                                            return nil
-                                                            
-                },
-                                                          valueForSubrow: { (subrow, row) -> IndexPath in
-                                                            
-                                                            return IndexPath(forSubrow: subrow, inMainrow: row)
-            })
-        })
+        }
+        
+        return nil
     }
     
     public func select(row: Int?, animated: Bool, scrollPosition: UITableViewScrollPosition) {
