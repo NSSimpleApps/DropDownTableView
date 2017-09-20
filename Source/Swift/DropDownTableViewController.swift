@@ -29,10 +29,16 @@ import UIKit
 
 
 @available(iOS 8.0, *)
+@objcMembers
 open class DropDownTableViewController: UITableViewController {
     
     private(set) public lazy var nsk_selectedRow: Int? = self.showSubrowsInRow
     private(set) public var nsk_numberOfSubrows = 0
+    
+    open func numberOfRows(in tableView: UITableView) -> Int {
+        
+        return 0
+    }
     
     /*optional*/ open var showSubrowsInRow: Int? {
         
@@ -692,7 +698,7 @@ open class DropDownTableViewController: UITableViewController {
     }
 }
 
-private extension Array where Element: Integer {
+private extension Array where Element: BinaryInteger {
     
     func countIf(_ predicate: (Array.Iterator.Element) throws -> Bool) rethrows -> Int {
         

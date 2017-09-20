@@ -1,3 +1,8 @@
+## 0.8 (2017-09-20)
+
+- Bump to Swift 4
+
+
 ## 0.7.2 (2017-03-25)
 
 - for swift version: `DropDownIndexPath` is a enum with cases: `Int` or `IndexPath`

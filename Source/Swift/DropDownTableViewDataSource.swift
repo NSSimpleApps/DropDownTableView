@@ -64,11 +64,6 @@ public protocol DropDownTableViewDataSource : NSObjectProtocol {
 
 extension DropDownTableViewController: DropDownTableViewDataSource {
     
-    open func numberOfRows(in tableView: UITableView) -> Int {
-        
-        return 0
-    }
-    
     open func tableView(_ tableView: UITableView, animationForInsertionIn row: Int) -> UITableViewRowAnimation {
         
         return .automatic

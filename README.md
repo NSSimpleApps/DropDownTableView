@@ -2,7 +2,7 @@
 
 Supporting `Swift 2.*` has been removed.
 
-`>= 0.6` for `Swift 3`.
+`>= 0.7` for `Swift 3`.
 
 Place into Podfile:
 
